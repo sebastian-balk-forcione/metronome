@@ -1,28 +1,32 @@
 import bell from "../assets/BELL.wav";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiPlayCircle, FiStopCircle } from "react-icons/fi";
 
 const audioContext = new AudioContext();
+
 const Metronome = () => {
   const request = new XMLHttpRequest();
   const [tempo, setTempo] = useState(100);
   const [isStarted, setIsStarted] = useState(false);
   const [on, setOn] = useState(false);
+  const [source, setSource] = useState(audioContext.createBufferSource());
+
+  useEffect(() => {
+    source.loopEnd = 1 / (tempo / 60);
+  }, [tempo, isStarted]);
 
   const metro = () => {
     request.open("GET", bell, true);
     request.responseType = "arraybuffer";
     request.onload = () => {
-      // Decode the audio data into an audio buffer
+      // Decode the audio into an audio buffer
       audioContext.decodeAudioData(request.response, (buffer) => {
-        // Create an instance of AudioBufferSourceNode
-        const source = audioContext.createBufferSource();
+        // const source = audioContext.createBufferSource();
         source.buffer = buffer;
 
         source.loop = true;
         source.loopEnd = 1 / (tempo / 60);
-
         // Connect the source node to the audio context's destination node
         source.connect(audioContext.destination);
 
@@ -51,6 +55,10 @@ const Metronome = () => {
     }
   };
 
+  const tempoChange = (value) => {
+    setTempo(value);
+  };
+
   return (
     <>
       <Wrapper>
@@ -68,9 +76,9 @@ const Metronome = () => {
           min="30"
           max="300"
           value={tempo}
-          onChange={(e) => setTempo(e.target.valueAsNumber)}
+          onChange={(e) => tempoChange(e.target.valueAsNumber)}
         ></Slider>
-        <div>{tempo}</div>
+        <Tempo>{tempo}</Tempo>
       </Wrapper>
     </>
   );
@@ -83,7 +91,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 70vh;
 `;
 
 const Btn = styled.button`
@@ -96,4 +104,10 @@ const Btn = styled.button`
 const Slider = styled.input`
   width: 25vw;
   color: white;
+`;
+
+const Tempo = styled.div`
+  color: orange;
+  font-size: 3em;
+  font-weight: 200;
 `;

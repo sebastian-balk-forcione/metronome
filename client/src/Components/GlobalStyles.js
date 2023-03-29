@@ -11,7 +11,7 @@ export default createGlobalStyle`
     input, button, select, option,
     h1, h2, h3, h4, h5, h6, p,
     text {
-        font-family: 'Barlow', sans-serif
+        font-family: 'Sofia Sans Extra Condensed', sans-serif
     }
 html, body {
         max-width: 100vw;
