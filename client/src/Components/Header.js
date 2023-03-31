@@ -1,11 +1,15 @@
 import styled from "styled-components";
 
+import { useAuth0 } from "@auth0/auth0-react";
+
 const Header = () => {
+  const { logout } = useAuth0();
   return (
     <>
       <Wrapper>
         <div>METRONOME</div>
-        <div>User</div>
+
+        <button onClick={() => logout()}> Sign Out</button>
       </Wrapper>
     </>
   );
