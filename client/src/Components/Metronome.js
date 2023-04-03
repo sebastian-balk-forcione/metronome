@@ -13,6 +13,8 @@ const Metronome = () => {
   const request = new XMLHttpRequest();
   const [tempo, setTempo] = useState(120);
   const [on, setOn] = useState(false);
+  // State when the metro has initially started
+  const [hasStarted, setHasStarted] = useState(false);
   const [source, setSource] = useState(audioContext.createBufferSource());
   const [turnOnGap, setTurnOnGap] = useState(false);
   const [timeSig, setTimeSig] = useState(3);
@@ -95,6 +97,7 @@ const Metronome = () => {
     };
     request.send();
     setOn(true);
+    setHasStarted(true);
   };
 
   // const mute = () => {
@@ -115,13 +118,13 @@ const Metronome = () => {
   };
 
   const start = () => {
-    if (!on) {
-      metro();
-    } else if (!turnOnGap) {
+    if (!hasStarted) {
+      console.log("0", on);
       metro();
     } else {
-      audioContext.resume();
+      console.log("2");
       setOn(true);
+      audioContext.resume();
     }
   };
 
@@ -152,6 +155,9 @@ const Metronome = () => {
         <ReactSwitch
           onChange={(e) => {
             setTurnOnGap(e);
+            // setHasStarted(false);
+            // audioContext.close();
+            // maybe create a new audio context here????
           }}
           checked={turnOnGap}
         />
