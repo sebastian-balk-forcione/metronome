@@ -12,17 +12,28 @@ const delay = ["| X | |", "| | X |", "| | | X", "| X |", "| | X"];
 const Metronome = () => {
   const request = new XMLHttpRequest();
   const [tempo, setTempo] = useState(120);
-  const [isStarted, setIsStarted] = useState(false);
   const [on, setOn] = useState(false);
   const [source, setSource] = useState(audioContext.createBufferSource());
   const [turnOnGap, setTurnOnGap] = useState(false);
-  const [timeSig, setTimeSig] = useState(4);
-  const [metroA, setMetroA] = useState(null);
-  const [metroB, setMetroB] = useState(null);
+  const [timeSig, setTimeSig] = useState(3);
+  const [metroA, setMetroA] = useState(1);
+  const [metroB, setMetroB] = useState(1);
+
+  const beatDuration = 1 / (tempo / 60);
+
+  const gappedTime = {
+    "| X | |": (beatDuration / 4) * 1,
+    "| | X |": (beatDuration / 4) * 2,
+    "| | | X": (beatDuration / 4) * 3,
+    "| X |": (beatDuration / 3) * 1,
+    "| | X": (beatDuration / 3) * 2,
+  };
+  // dont leave it null!!!!
+  const [gap, setGap] = useState(gappedTime["| X | |"]);
 
   useEffect(() => {
-    source.loopEnd = 1 / (tempo / 60);
-  }, [tempo, isStarted, source]);
+    source.loopEnd = beatDuration;
+  }, [tempo, on, source, turnOnGap]);
 
   const gapTime = (delay, newSource) => {
     console.log("gap time called", newSource);
@@ -34,7 +45,7 @@ const Metronome = () => {
           setSource(newSource);
           newSource.buffer = buffer;
           newSource.loop = true;
-          newSource.loopEnd = 1 / (tempo / 60);
+          newSource.loopEnd = beatDuration;
           newSource.connect(audioContext.destination);
           newSource.start(delay + audioContext.currentTime);
           newSource.stop(
@@ -44,18 +55,6 @@ const Metronome = () => {
             metro(audioContext.createBufferSource());
           };
         }
-        // const source = audioContext.createBufferSource();
-        // audioContext.decodeAudioData(request.response, (buffer) => {
-        //   source.buffer = buffer;
-        //   source.loop = true;
-        //   source.loopEnd = 1 / (tempo / 60);
-        //   source.connect(audioContext.destination);
-        //   source.start(audioContext.currentTime + delay);
-        //   source.stop(2 + audioContext.currentTime);
-        //   source.onended = () => {
-        //     metro(audioContext.createBufferSource());
-        //   };
-        // });
       });
     };
     request.send();
@@ -71,7 +70,7 @@ const Metronome = () => {
           console.log("if", turnOnGap);
           source.buffer = buffer;
           source.loop = true;
-          source.loopEnd = 1 / (tempo / 60);
+          source.loopEnd = beatDuration;
           source.connect(audioContext.destination);
           source.start(0);
         } else if (turnOnGap) {
@@ -82,20 +81,19 @@ const Metronome = () => {
           console.log("else if", turnOnGap);
           newSource.buffer = buffer;
           newSource.loop = true;
-          newSource.loopEnd = 1 / (tempo / 60);
+          newSource.loopEnd = beatDuration;
           newSource.connect(audioContext.destination);
-          newSource.start(0);
+          newSource.start(audioContext.currentTime);
           newSource.stop(
             metroA * timeSig * newSource.loopEnd + audioContext.currentTime
           );
           newSource.onended = () => {
-            gapTime(0.25, audioContext.createBufferSource());
+            gapTime(gap, audioContext.createBufferSource());
           };
         }
       });
     };
     request.send();
-    setIsStarted(true);
     setOn(true);
   };
 
@@ -117,7 +115,7 @@ const Metronome = () => {
   };
 
   const start = () => {
-    if (!isStarted) {
+    if (!on) {
       metro();
     } else if (!turnOnGap) {
       metro();
@@ -176,8 +174,12 @@ const Metronome = () => {
             <div>
               <div>Side A</div>
               <select onChange={(e) => setMetroA(e.target.value)}>
-                {bars.map((bar) => {
-                  return <option value={bar}>{bar}</option>;
+                {bars.map((bar, index) => {
+                  return (
+                    <option value={bar} key={index}>
+                      {bar}
+                    </option>
+                  );
                 })}
               </select>
             </div>
@@ -197,8 +199,8 @@ const Metronome = () => {
 
             <div>
               <div>G_A_P</div>
-              <select>
-                {delay.map((i, index) => {
+              <select onChange={(e) => setGap(gappedTime[e.target.value])}>
+                {Object.keys(gappedTime).map((i, index) => {
                   return (
                     <option key={index} value={i}>
                       {i}

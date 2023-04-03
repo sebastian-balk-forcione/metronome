@@ -1,15 +1,15 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
 
-import { FaRegSadCry } from "react-icons/fa";
-
 const LoginBtn = () => {
-  const { loginWithRedirect } = useAuth0();
+  const { loginWithRedirect, user } = useAuth0();
+
+  console.log(user);
 
   return (
     <>
       <Button onClick={() => loginWithRedirect()}>
-        <FaRegSadCry />
+        <div>Sign In</div>
       </Button>
     </>
   );

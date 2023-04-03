@@ -9,7 +9,14 @@ const Header = () => {
       <Wrapper>
         <div>METRONOME</div>
 
-        <button onClick={() => logout()}> Sign Out</button>
+        <button
+          onClick={() =>
+            logout({ logoutParams: { returnTo: window.location.origin } })
+          }
+        >
+          {" "}
+          Sign Out
+        </button>
       </Wrapper>
     </>
   );

@@ -15,6 +15,8 @@ express()
   .get("/test", (req, res) => {
     res.status(200).json({ status: 200, success: true });
   })
+
+  // .post("/login")
   // this is our catch all endpoint.
   .get("*", (req, res) => {
     res.status(404).json({
