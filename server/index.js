@@ -5,6 +5,8 @@ const express = require("express");
 const morgan = require("morgan");
 const port = 8888;
 
+const { checkUser, getEntries, newEntry } = require("./handlers");
+
 express()
   .use(morgan("tiny"))
   .use(express.json())
@@ -16,7 +18,11 @@ express()
     res.status(200).json({ status: 200, success: true });
   })
 
-  // .post("/login")
+  .get("/entries/:_id", getEntries)
+
+  .post("/newEntry", newEntry)
+
+  .post("/login", checkUser)
   // this is our catch all endpoint.
   .get("*", (req, res) => {
     res.status(404).json({

@@ -30,7 +30,7 @@ const Metronome = () => {
     "| X |": (beatDuration / 3) * 1,
     "| | X": (beatDuration / 3) * 2,
   };
-  // dont leave it null!!!!
+
   const [gap, setGap] = useState(gappedTime["| X | |"]);
 
   useEffect(() => {
@@ -260,7 +260,7 @@ const Slider = styled.input`
 `;
 
 const Tempo = styled.div`
-  color: #f95700ff;
+  color: #30d5c8;
   font-size: 3em;
   font-weight: 200;
 `;

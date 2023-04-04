@@ -4,8 +4,6 @@ import styled from "styled-components";
 const LoginBtn = () => {
   const { loginWithRedirect, user } = useAuth0();
 
-  console.log(user);
-
   return (
     <>
       <Button onClick={() => loginWithRedirect()}>
