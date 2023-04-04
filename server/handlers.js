@@ -12,6 +12,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const client = new MongoClient(MONGO_URI, options);
 
+// Gets all entries from specific user
 const getEntries = async (req, res) => {
   const _id = req.params._id;
 
@@ -43,8 +44,10 @@ const checkUser = async (req, res) => {
     console.log(result);
     if (!result) {
       const newUser = { _id: newCode, ...body };
-      addUser = await db.collection("users").insertOne(newUser);
-      if (addUser) {
+      const newEntry = { _id: newCode, entries: [] };
+      const addUser = await db.collection("users").insertOne(newUser);
+      const addEntry = await db.collection("entries").insertOne(newEntry);
+      if (addUser && addEntry) {
         res.status(200).json({
           status: 200,
           _id: newCode,
@@ -66,6 +69,7 @@ const checkUser = async (req, res) => {
   client.close();
 };
 
+// adds a new entry to a users specfic folder in mongo
 const newEntry = async (req, res) => {
   const body = req.body;
   !body &&
@@ -102,4 +106,35 @@ const newEntry = async (req, res) => {
   client.close();
 };
 
-module.exports = { checkUser, getEntries, newEntry };
+const deleteEntry = async (req, res) => {
+  const userId = req.params.userid;
+  const entryId = req.params.entryid;
+  !userId || (!entryId && res.sendStatus(400));
+  try {
+    await client.connect();
+    const db = client.db("Metronome");
+    const removeEntry = await db
+      .collection("entries")
+      .updateOne({ _id: userId }, { $pull: { entries: { _id: entryId } } });
+    if (removeEntry.matchedCount === 1 && removeEntry.modifiedCount === 1) {
+      res.status(200).json({ status: 200, success: true });
+    } else if (
+      removeEntry.matchedCount === 0 &&
+      removeEntry.modifiedCount === 0
+    ) {
+      res.status(400).json({
+        status: 400,
+        success: false,
+        message:
+          "Please ensure that all of the provided information is correct",
+      });
+    }
+  } catch {
+    res
+      .status(500)
+      .json({ status: 500, message: "An unexpected error occured" });
+  }
+  client.close();
+};
+
+module.exports = { checkUser, getEntries, newEntry, deleteEntry };

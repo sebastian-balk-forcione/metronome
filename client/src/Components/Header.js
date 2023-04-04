@@ -20,7 +20,7 @@ const Header = () => {
   return (
     <>
       <Wrapper>
-        <Title to={"/"}>METRONOME</Title>
+        <Title to={"/metronome"}>METRONOME</Title>
         <Container>
           {client && (
             <div>
@@ -32,7 +32,7 @@ const Header = () => {
 
           {isOpen.open && (
             <Menu>
-              <Link to={"/logbook"}>Log Book</Link>
+              <LogBook to={"/logbook"}>Log Book</LogBook>
               <div
                 onClick={() =>
                   logout({ logoutParams: { returnTo: window.location.origin } })
@@ -85,11 +85,21 @@ const Menu = styled.div`
   width: 115px;
   font-size: 2em;
   text-align: center;
-  color: #01f9eb;
-  background-color: #8f00ff;
+  color: white;
+  background-color: #ff6b35;
+  & * {
+    &:hover {
+      color: #14539a;
+      font-weight: bold;
+    }
+  }
   &:nth-child(2) {
     cursor: pointer;
   }
+`;
+
+const LogBook = styled(Link)`
+  color: white;
 `;
 
 export default Header;

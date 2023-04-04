@@ -7,7 +7,6 @@ import { FiPlayCircle, FiStopCircle } from "react-icons/fi";
 const audioContext = new AudioContext();
 const timeSignatures = [3, 4, 5, 7, 9];
 const bars = [1, 2, 3, 4, 5];
-const delay = ["| X | |", "| | X |", "| | | X", "| X |", "| | X"];
 
 const Metronome = () => {
   const request = new XMLHttpRequest();
@@ -16,6 +15,7 @@ const Metronome = () => {
   // State when the metro has initially started
   const [hasStarted, setHasStarted] = useState(false);
   const [source, setSource] = useState(audioContext.createBufferSource());
+  const [source2, setSource2] = useState(audioContext.createBufferSource());
   const [turnOnGap, setTurnOnGap] = useState(false);
   const [timeSig, setTimeSig] = useState(3);
   const [metroA, setMetroA] = useState(1);
@@ -37,6 +37,10 @@ const Metronome = () => {
     source.loopEnd = beatDuration;
   }, [tempo, on, source, turnOnGap]);
 
+  useEffect(() => {
+    source2.loopEnd = beatDuration;
+  }, [tempo, on, source2, turnOnGap]);
+
   const gapTime = (delay, newSource) => {
     console.log("gap time called", newSource);
     request.open("GET", bell, true);
@@ -44,7 +48,7 @@ const Metronome = () => {
     request.onload = () => {
       audioContext.decodeAudioData(request.response, (buffer) => {
         if (newSource) {
-          setSource(newSource);
+          setSource2(newSource);
           newSource.buffer = buffer;
           newSource.loop = true;
           newSource.loopEnd = beatDuration;
@@ -77,7 +81,10 @@ const Metronome = () => {
           source.start(0);
         } else if (turnOnGap) {
           if (newSource === undefined) {
+            console.log("hdllo");
             newSource = audioContext.createBufferSource();
+            setSource(newSource);
+          } else {
             setSource(newSource);
           }
           console.log("else if", turnOnGap);

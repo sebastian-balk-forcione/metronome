@@ -1,6 +1,22 @@
 import styled from "styled-components";
+import { useContext, useState } from "react";
+import { UserContext } from "./Context";
+import { TfiTrash } from "react-icons/tfi";
+import { AiOutlineFolderView } from "react-icons/ai";
 
-const Entries = ({ date, entry, subject }) => {
+const Entries = ({ date, entry, subject, id, clientId }) => {
+  const { newEntry, setNewEntry, setDisplayEntry } = useContext(UserContext);
+
+  const handleClick = () => {
+    fetch(`/delete-entry/${id}/${clientId}`, { method: "DELETE" }).then(() => {
+      setNewEntry(!newEntry);
+    });
+  };
+
+  const handleEntryClick = () => {
+    setDisplayEntry({ entry: entry, date: date, subject: subject });
+  };
+
   return (
     <>
       <Wrapper>
@@ -9,8 +25,16 @@ const Entries = ({ date, entry, subject }) => {
           <div>{date}</div>
         </div>
         <ButtonWrap>
-          <button>View</button>
-          <button>Delete</button>
+          <button
+            onClick={() => {
+              handleEntryClick();
+            }}
+          >
+            <AiOutlineFolderView />
+          </button>
+          <button onClick={() => handleClick()}>
+            <TfiTrash />
+          </button>
         </ButtonWrap>
       </Wrapper>
     </>
@@ -33,10 +57,14 @@ const Wrapper = styled.div`
 
 const ButtonWrap = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
+
   & * {
     margin: 8px 0;
     cursor: pointer;
+    border: none;
+    color: white;
+    background-color: #14539a;
+    font-size: 0.9em;
   }
 `;

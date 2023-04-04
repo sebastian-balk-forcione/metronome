@@ -5,7 +5,7 @@ const express = require("express");
 const morgan = require("morgan");
 const port = 8888;
 
-const { checkUser, getEntries, newEntry } = require("./handlers");
+const { checkUser, getEntries, newEntry, deleteEntry } = require("./handlers");
 
 express()
   .use(morgan("tiny"))
@@ -23,6 +23,9 @@ express()
   .post("/newEntry", newEntry)
 
   .post("/login", checkUser)
+
+  .delete("/delete-entry/:entryid/:userid", deleteEntry)
+
   // this is our catch all endpoint.
   .get("*", (req, res) => {
     res.status(404).json({

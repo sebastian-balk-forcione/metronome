@@ -7,10 +7,10 @@ export const UserProvider = ({ children }) => {
   const [client, setClient] = useState(null);
   const [newEntry, setNewEntry] = useState(false);
   const { user, isAuthenticated } = useAuth0();
+  const [displayEntry, setDisplayEntry] = useState(null);
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log(user.name);
       const body = {
         name: user.name,
         email: user.email,
@@ -23,13 +23,11 @@ export const UserProvider = ({ children }) => {
         body: JSON.stringify(body),
       })
         .then((res) => {
-          console.log(res);
           return res.json();
         })
         .then((data) => {
           const _id = data._id;
           setClient({ _id, user });
-          console.log(data);
         })
         .catch((error) => {
           window.alert(error);
@@ -38,7 +36,9 @@ export const UserProvider = ({ children }) => {
   }, [user, isAuthenticated]);
 
   return (
-    <UserContext.Provider value={{ client, newEntry, setNewEntry }}>
+    <UserContext.Provider
+      value={{ client, newEntry, setNewEntry, displayEntry, setDisplayEntry }}
+    >
       {children}
     </UserContext.Provider>
   );
