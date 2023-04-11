@@ -1,33 +1,42 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Metronome from "./Metronome";
-import styled from "styled-components";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import Metronome from "./Metronome/Metronome";
 import GlobalStyles from "./GlobalStyles";
 import Header from "./Header";
-import LoginPage from "./LoginPage";
-import LogBook from "./LogBook";
+import LoginPage from "./Login/LoginPage";
+import LogBook from "./Logbook/LogBook";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect, useState } from "react";
+import SoundPage from "./Sound Page/SoundPage";
+
+// const audioContext = new AudioContext();
 
 const App = () => {
-  const { user, isAuthenticated } = useAuth0();
+  const { isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/metronome");
+    }
+  }, [isAuthenticated]);
 
   return (
     <>
-      <BrowserRouter>
-        <GlobalStyles />
-        {!isAuthenticated ? (
-          <Routes>
-            <Route path="/" element={<LoginPage />} />
-          </Routes>
-        ) : (
-          <div>
-            <Header />
-          </div>
-        )}
+      <GlobalStyles />
+      {!isAuthenticated ? (
         <Routes>
-          <Route path={"/metronome"} element={<Metronome />} />
-          <Route path={"/logbook"} element={<LogBook />} />
+          <Route path="/" element={<LoginPage />} />
         </Routes>
-      </BrowserRouter>
+      ) : (
+        <div>
+          <Header />
+        </div>
+      )}
+      <Routes>
+        <Route exact path={"/metronome"} element={<Metronome />} />
+        <Route path={"/logbook"} element={<LogBook />} />
+        <Route path={"/sounds"} element={<SoundPage />} />
+      </Routes>
     </>
   );
 };

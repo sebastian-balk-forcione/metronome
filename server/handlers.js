@@ -14,20 +14,18 @@ const client = new MongoClient(MONGO_URI, options);
 
 // Gets all entries from specific user
 const getEntries = async (req, res) => {
-  const _id = req.params._id;
-
+  const _id = req.params.id;
   try {
     await client.connect();
     const db = client.db("Metronome");
     const result = await db.collection("entries").findOne({ _id });
-
     result
       ? res.status(200).json({ status: 200, data: result.entries })
       : res.status(404).json({ status: 404, message: "Information not found" });
   } catch {
     res
       .status(500)
-      .json({ status: 500, message: "An unexpected error occured" });
+      .json({ status: 500, message: "An unexpected error occured, me?" });
   }
   client.close();
 };
@@ -41,9 +39,8 @@ const checkUser = async (req, res) => {
     await client.connect();
     const db = client.db("Metronome");
     const result = await db.collection("users").findOne({ email });
-    console.log(result);
     if (!result) {
-      const newUser = { _id: newCode, ...body };
+      const newUser = { _id: newCode, ...body, sounds: [] };
       const newEntry = { _id: newCode, entries: [] };
       const addUser = await db.collection("users").insertOne(newUser);
       const addEntry = await db.collection("entries").insertOne(newEntry);
@@ -59,6 +56,74 @@ const checkUser = async (req, res) => {
         status: 200,
         _id: result._id,
         message: `${body.name} has succesfully logged in`,
+      });
+    }
+  } catch {
+    res
+      .status(500)
+      .json({ status: 500, message: "An unexpected error occured" });
+  }
+  client.close();
+};
+
+const getSounds = async (req, res) => {
+  const _id = req.params.id;
+  try {
+    await client.connect();
+    const db = client.db("Metronome");
+    // const query = { _id };
+    // const sounds = { $set: { sounds } };
+    const result = await db.collection("users").find().toArray();
+
+    const user = result.find((i) => {
+      return i._id === _id ? i : null;
+    });
+    if (user) {
+      res.status(200).json({
+        status: 200,
+        data: user.sounds,
+      });
+    } else {
+      res.status(400).json({
+        status: 400,
+        message:
+          "Please ensure all of the proper information is being passed to the backend",
+      });
+    }
+  } catch {
+    res
+      .status(500)
+      .json({ status: 500, message: "An unexpected error occured" });
+  }
+  client.close();
+};
+
+// Adds users prefered sounds
+const addSounds = async (req, res) => {
+  const body = req.body;
+  !body &&
+    res.status(400).json({
+      status: 400,
+      message:
+        "Please ensure all of the proper information is being passed to the backend",
+    });
+  try {
+    await client.connect();
+    const db = client.db("Metronome");
+    const query = { _id: body[0]._id };
+    const update = { $set: { sounds: body[1] } };
+    const result = await db.collection("users").updateOne(query, update);
+    if (result.matchedCount === 1 && result.modifiedCount === 1) {
+      res.status(200).json({
+        status: 200,
+        success: true,
+        message: "data added succesfully",
+      });
+    } else {
+      res.status(404).json({
+        status: 404,
+        success: false,
+        message: "An unexpected error occured",
       });
     }
   } catch {
@@ -106,6 +171,7 @@ const newEntry = async (req, res) => {
   client.close();
 };
 
+// Deletes a journal entry
 const deleteEntry = async (req, res) => {
   const userId = req.params.userid;
   const entryId = req.params.entryid;
@@ -137,4 +203,11 @@ const deleteEntry = async (req, res) => {
   client.close();
 };
 
-module.exports = { checkUser, getEntries, newEntry, deleteEntry };
+module.exports = {
+  checkUser,
+  getEntries,
+  newEntry,
+  deleteEntry,
+  addSounds,
+  getSounds,
+};

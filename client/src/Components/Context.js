@@ -6,8 +6,11 @@ export const UserContext = createContext(null);
 export const UserProvider = ({ children }) => {
   const [client, setClient] = useState(null);
   const [newEntry, setNewEntry] = useState(false);
+  const [newSounds, setNewSounds] = useState(false);
   const { user, isAuthenticated } = useAuth0();
   const [displayEntry, setDisplayEntry] = useState(null);
+  const [fetchedSounds, setFetchedSounds] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -35,9 +38,31 @@ export const UserProvider = ({ children }) => {
     }
   }, [user, isAuthenticated]);
 
+  useEffect(() => {
+    if (client) {
+      fetch(`/get-sounds/${client._id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setFetchedSounds(data.data);
+          setLoading(false);
+        });
+    }
+  }, [client, isAuthenticated, newSounds]);
+
   return (
     <UserContext.Provider
-      value={{ client, newEntry, setNewEntry, displayEntry, setDisplayEntry }}
+      value={{
+        client,
+        newEntry,
+        setNewEntry,
+        displayEntry,
+        setDisplayEntry,
+        fetchedSounds,
+        setFetchedSounds,
+        newSounds,
+        setNewSounds,
+        loading,
+      }}
     >
       {children}
     </UserContext.Provider>

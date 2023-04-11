@@ -5,7 +5,14 @@ const express = require("express");
 const morgan = require("morgan");
 const port = 8888;
 
-const { checkUser, getEntries, newEntry, deleteEntry } = require("./handlers");
+const {
+  checkUser,
+  getEntries,
+  newEntry,
+  deleteEntry,
+  addSounds,
+  getSounds,
+} = require("./handlers");
 
 express()
   .use(morgan("tiny"))
@@ -14,13 +21,13 @@ express()
   // Any requests for static files will go into the public folder
   .use(express.static("public"))
 
-  .get("/test", (req, res) => {
-    res.status(200).json({ status: 200, success: true });
-  })
+  .get("/get-sounds/:id", getSounds)
 
-  .get("/entries/:_id", getEntries)
+  .get("/entries/:id", getEntries)
 
   .post("/newEntry", newEntry)
+
+  .post("/add-sounds", addSounds)
 
   .post("/login", checkUser)
 

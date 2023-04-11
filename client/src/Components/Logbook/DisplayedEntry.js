@@ -1,10 +1,9 @@
 import { useContext, useState } from "react";
-import { UserContext } from "./Context";
+import { UserContext } from "../Context";
 import styled from "styled-components";
 
 const DisplayedEntry = () => {
-  const { newEntry, setNewEntry, displayEntry } = useContext(UserContext);
-  console.log(displayEntry);
+  const { displayEntry } = useContext(UserContext);
   return (
     <>
       {displayEntry && (

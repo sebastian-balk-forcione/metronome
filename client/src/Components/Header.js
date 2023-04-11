@@ -32,7 +32,12 @@ const Header = () => {
 
           {isOpen.open && (
             <Menu>
-              <LogBook to={"/logbook"}>Log Book</LogBook>
+              <LogBook to={"/logbook"} onClick={handleClick}>
+                Log Book
+              </LogBook>
+              <SoundPage to={"/sounds"} onClick={handleClick}>
+                Sounds
+              </SoundPage>
               <div
                 onClick={() =>
                   logout({ logoutParams: { returnTo: window.location.origin } })
@@ -65,24 +70,30 @@ const Container = styled.div`
 const Title = styled(Link)`
   font-size: 2.5em;
   color: white;
+  letter-spacing: 5px;
 `;
 
 const Dropdown = styled.button`
-  width: 8vw;
+  width: fit-content;
   height: fit-content;
   font-size: 2em;
   color: white;
+  padding: 6px;
   background: #ff6b35;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  margin-right: 20px;
 `;
 
 const Menu = styled.div`
   position: absolute;
+  display: flex;
+  flex-direction: column;
   top: 100%;
-  left: 0;
+  right: 20px;
   width: 115px;
+  border-radius: 6px;
   font-size: 2em;
   text-align: center;
   color: white;
@@ -99,6 +110,10 @@ const Menu = styled.div`
 `;
 
 const LogBook = styled(Link)`
+  color: white;
+`;
+
+const SoundPage = styled(Link)`
   color: white;
 `;
 

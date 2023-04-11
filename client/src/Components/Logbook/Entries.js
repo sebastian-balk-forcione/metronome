@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useContext, useState } from "react";
-import { UserContext } from "./Context";
+import { UserContext } from "../Context";
 import { TfiTrash } from "react-icons/tfi";
 import { AiOutlineFolderView } from "react-icons/ai";
 

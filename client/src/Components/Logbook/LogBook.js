@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { useEffect, useContext, useState } from "react";
-import { UserContext } from "./Context";
+import { UserContext } from "../Context";
 import Entries from "./Entries";
 import { format } from "date-fns";
 import DisplayedEntry from "./DisplayedEntry";
+import Loading from "../Loading";
 
 const LogBook = () => {
   const { client, newEntry, setNewEntry } = useContext(UserContext);
@@ -15,10 +16,10 @@ const LogBook = () => {
 
   useEffect(() => {
     if (client) {
+      setUserEntries(null);
       fetch(`/entries/${client._id}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           if (data.data.length === 0) {
             setNoEntries(true);
           } else {
@@ -35,7 +36,6 @@ const LogBook = () => {
   }, [client, newEntry]);
 
   const handleSubmit = (ev) => {
-    console.log(client._id, date, sub, entry);
     ev.preventDefault();
     fetch("/newEntry", {
       method: "POST",
@@ -55,7 +55,6 @@ const LogBook = () => {
         setEntry("");
         setSub("");
         setNewEntry(!newEntry);
-        console.log(data);
       })
       .catch((error) => {
         console.log(error);
@@ -93,7 +92,9 @@ const LogBook = () => {
               <div>Looks like you dont have any entries! Start practicing!</div>
             </NoEntry>
           ) : (
-            <div> Loading</div>
+            <LoadingWrap>
+              <Loading />
+            </LoadingWrap>
           )}
         </LeftWrap>
         <RightWrap>
@@ -247,10 +248,18 @@ const NoEntry = styled.div`
   border: 2px solid #ff6b35;
   padding: 8px;
   margin: 50px 0 0 80px;
-  width: 25vw;
+  width: 23vw;
+  text-align: center;
   & div:first-child {
     font-size: 1.8em;
     color: white;
     font-weight: bold;
   }
+`;
+
+const LoadingWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 33vw;
+  margin-top: 40px;
 `;
