@@ -7,7 +7,7 @@ import SoundChoice from "./SoundChoice";
 import { Sounds } from "../Assets/Sounds";
 import { UserContext } from "../Context";
 
-const audioContext = new AudioContext();
+let audioContext = new AudioContext();
 const gainNode = audioContext.createGain();
 
 const Metronome = () => {
@@ -22,18 +22,22 @@ const Metronome = () => {
   const [choice, setChoice] = useState(Sounds[choiceIndex].src);
   const [gain, setGain] = useState(50);
 
-  const beatDuration = 1 / (tempo / 60);
-
+  // if the user has sounds saved, the first sound from that list will be set as the default before playing.
   useEffect(() => {
     if (fetchedSounds.length > 0) {
       setChoice(fetchedSounds[choiceIndex].src);
     }
   }, [fetchedSounds]);
 
+  // sets the amount of time one beep will last (in seconds) depending on the set tempo
+  const beatDuration = 1 / (tempo / 60);
+
+  // creates the (one beat) loop time based on the beat duration. Having this variable outside of metro() enables th user to changes while it's playing.
   useEffect(() => {
     source.loopEnd = beatDuration;
   }, [tempo, on, source]);
 
+  // Enables user to change sound while playing
   useEffect(() => {
     if (hasStarted && on) {
       const newSource = audioContext.createBufferSource();
@@ -43,19 +47,21 @@ const Metronome = () => {
     }
   }, [choice, choiceIndex]);
 
+  // Fires when you leave the page so that metronome stops playing.
   useEffect(() => {
     return () => {
       if (source.loop === true) {
         if (audioContext.state === "suspended") {
+          source.stop(audioContext.currentTime);
           audioContext.resume();
+        } else {
+          source.stop(audioContext.currentTime);
         }
-        source.stop();
-        setOn(false);
-        setHasStarted(false);
       }
     };
   }, []);
 
+  // Metronome function
   const metro = (newSource) => {
     request.open("GET", choice, true);
     request.responseType = "arraybuffer";
@@ -104,7 +110,7 @@ const Metronome = () => {
     setTempo(value);
   };
 
-  const handleChange = (e) => {
+  const handleVolumeChange = (e) => {
     gainNode.gain.value = e.target.value / 100;
     setGain(e.target.value);
   };
@@ -147,7 +153,7 @@ const Metronome = () => {
           min={0}
           max={100}
           value={gain}
-          onChange={(e) => handleChange(e)}
+          onChange={(e) => handleVolumeChange(e)}
         ></VolSlider>
         <Volume>
           <IoVolumeHighOutline />
@@ -163,7 +169,7 @@ const Metronome = () => {
 export default Metronome;
 
 const BigWrapper = styled.div`
-  margin-top: 130px;
+  margin-top: 85px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -212,7 +218,6 @@ const SoundTitle = styled.div`
 const SoundWrap = styled.div`
   width: fit-content;
   height: fit-content;
-  /* border: 2px solid #ff6b35; */
   padding: 5px;
   display: flex;
   & * {

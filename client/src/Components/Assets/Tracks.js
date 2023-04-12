@@ -1,6 +1,6 @@
-import AMBIENT_TRK_1 from "../../assets/AMBIENT_TRK_1.wav";
-import AMBIENT_TRK_2 from "../../assets/AMBIENT_TRK_2.wav";
-import AMBIENT_TRK_3 from "../../assets/AMBIENT_TRK_3.wav";
+import AMBIENT_TRK_1 from "../../assets/AMBIENT_TRK_1.ogg";
+import AMBIENT_TRK_2 from "../../assets/AMBIENT_TRK_2.ogg";
+import AMBIENT_TRK_3 from "../../assets/AMBIENT_TRK_3.ogg";
 
 export const tracks = [
   {

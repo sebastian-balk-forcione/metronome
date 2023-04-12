@@ -9,6 +9,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState({ open: false });
   const { client } = useContext(UserContext);
 
+  // dropdown in header functionality
   const handleClick = () => {
     setIsOpen((state) => {
       return {

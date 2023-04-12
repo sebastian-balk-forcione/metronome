@@ -20,6 +20,7 @@ const LogBook = () => {
       fetch(`/entries/${client._id}`)
         .then((res) => res.json())
         .then((data) => {
+          // checking to see if the user has entries saved, not display default msg
           if (data.data.length === 0) {
             setNoEntries(true);
           } else {
@@ -35,6 +36,7 @@ const LogBook = () => {
     }
   }, [client, newEntry]);
 
+  // post fetch for entry
   const handleSubmit = (ev) => {
     ev.preventDefault();
     fetch("/newEntry", {

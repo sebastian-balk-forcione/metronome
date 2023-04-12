@@ -12,6 +12,7 @@ export const UserProvider = ({ children }) => {
   const [fetchedSounds, setFetchedSounds] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Post when a user intially signs in.
   useEffect(() => {
     if (isAuthenticated) {
       const body = {
@@ -38,6 +39,7 @@ export const UserProvider = ({ children }) => {
     }
   }, [user, isAuthenticated]);
 
+  // get fetch for the users save sounds
   useEffect(() => {
     if (client) {
       fetch(`/get-sounds/${client._id}`)

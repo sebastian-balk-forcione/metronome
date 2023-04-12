@@ -5,10 +5,8 @@ import Header from "./Header";
 import LoginPage from "./Login/LoginPage";
 import LogBook from "./Logbook/LogBook";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SoundPage from "./Sound Page/SoundPage";
-
-// const audioContext = new AudioContext();
 
 const App = () => {
   const { isAuthenticated } = useAuth0();

@@ -1,8 +1,10 @@
 import styled from "styled-components";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "../Context";
 import { TfiTrash } from "react-icons/tfi";
 import { AiOutlineFolderView } from "react-icons/ai";
+
+// Displaying and deleting entries
 
 const Entries = ({ date, entry, subject, id, clientId }) => {
   const { newEntry, setNewEntry, setDisplayEntry } = useContext(UserContext);

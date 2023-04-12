@@ -7,11 +7,9 @@ import { useNavigate } from "react-router-dom";
 const SoundPage = () => {
   const [addSound, setAddSound] = useState([]);
   const [add, setAdd] = useState(false);
-  const { client, setNewEntry, newEntry, newSounds, setNewSounds } =
-    useContext(UserContext);
+  const { client, newSounds, setNewSounds } = useContext(UserContext);
 
-  const navigate = useNavigate();
-
+  // Handles users selection of sounds.
   const handleClick = (sound) => {
     if (addSound.length > 0) {
       const check = addSound.find((i) => i === sound);
@@ -23,6 +21,7 @@ const SoundPage = () => {
     }
   };
 
+  // post fetch for new sounds
   const submitChanges = () => {
     const body = [{ _id: client._id }, addSound];
     fetch("/add-sounds", {
@@ -39,7 +38,6 @@ const SoundPage = () => {
         setAddSound([]);
         setNewSounds(!newSounds);
         setAdd(true);
-        navigate("/metronome");
       })
       .catch((error) => {
         window.alert(error);

@@ -19,6 +19,7 @@ const Controls = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(75);
 
+  // PLay/pause track based off state change below
   useEffect(() => {
     isPlaying ? trackRef.current.play() : trackRef.current.pause();
   }, [trackRef, isPlaying, trackIndex]);

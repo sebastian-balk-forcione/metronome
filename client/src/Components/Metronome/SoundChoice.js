@@ -4,12 +4,14 @@ import { useContext } from "react";
 import { UserContext } from "../Context";
 
 const SoundChoice = ({ setChoiceIndex, setChoice, sounds, fetchedSounds }) => {
+  // Click handler to set the choice index based off of selection and then render either a users saved sounds or, if they don't have anything, the default sounds.
   const clickHandler = (index) => {
     setChoiceIndex(index);
     fetchedSounds.length > 0
       ? setChoice(fetchedSounds[index].src)
       : setChoice(sounds[index].src);
   };
+
   const { loading } = useContext(UserContext);
   if (loading) {
     return <Loading />;

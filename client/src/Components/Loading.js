@@ -1,5 +1,7 @@
 import styled, { keyframes } from "styled-components";
-import { Keyframes } from "styled-components";
+
+// 3:2 polyrhythmic loading state
+
 const Loading = () => {
   return (
     <Wrapper>
