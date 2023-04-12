@@ -114,6 +114,10 @@ const Button = styled.button`
   background-color: #ff6b35;
   font-size: 2.7em;
   padding: 8px 60px;
+  cursor: pointer;
+  :active {
+    color: #14539a;
+  }
 `;
 
 const SideBtn = styled.button`
@@ -123,6 +127,10 @@ const SideBtn = styled.button`
   background-color: #ff6b35;
   font-size: 2.2em;
   padding: 0 60px;
+  cursor: pointer;
+  :active {
+    color: #14539a;
+  }
 `;
 
 const TitleWrap = styled.div`

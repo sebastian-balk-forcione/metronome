@@ -7,7 +7,7 @@ import SoundChoice from "./SoundChoice";
 import { Sounds } from "../Assets/Sounds";
 import { UserContext } from "../Context";
 
-let audioContext = new AudioContext();
+const audioContext = new AudioContext();
 const gainNode = audioContext.createGain();
 
 const Metronome = () => {
@@ -53,7 +53,7 @@ const Metronome = () => {
       if (source.loop === true) {
         if (audioContext.state === "suspended") {
           source.stop(audioContext.currentTime);
-          audioContext.resume();
+          // audioContext.resume();
         } else {
           source.stop(audioContext.currentTime);
         }
@@ -98,7 +98,7 @@ const Metronome = () => {
   };
 
   const start = () => {
-    if (!hasStarted) {
+    if (!hasStarted && audioContext.currentTime === 0) {
       metro();
     } else {
       setOn(true);
